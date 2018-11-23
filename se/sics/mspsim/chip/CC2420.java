@@ -600,14 +600,14 @@ public class CC2420 extends Radio802154 implements USARTListener {
           } else {
               if (!frameRejected) {
                   rxFIFO.write(data);
+                  // FIFO pin goes high after a byte is written to RXFIFO
+                  setFIFO(true);
                   if (rxread == 0) {
                       rxCrc.setCRC(0);
                       rxlen = data & 0xff;
                       //System.out.println("Starting to get packet at: " + rxfifoWritePos + " len = " + rxlen);
                       decodeAddress = addressDecode;
                       if (logLevel > INFO) log("RX: Start frame length " + rxlen);
-                      // FIFO pin goes high after length byte is written to RXFIFO
-                      setFIFO(true);
                   } else if (rxread < rxlen - 1) {
                       /* As long as we are not in the length or FCF (CRC) we count CRC */
                       rxCrc.addBitrev(data & 0xff);
